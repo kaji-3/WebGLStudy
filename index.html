@@ -32,7 +32,7 @@ var camera;
 // camera 視点初期化
 function initCamera() {  
   camera = new THREE.PerspectiveCamera( 45 , width / height , 1 , 10000 );
-  camera.position.x = 700;
+  camera.position.x = 500;
   camera.position.y = 20;
   camera.position.z = 50;
   camera.up.x = 0;
@@ -101,8 +101,12 @@ function threeStart() {
 }
 
 // マウス操作によるカメラ位置の変更
+// Three.js でのY座標は画面上のX座標であり、Z座用は、画面上のY座標である
 var down = false;
+// ドラッグ開始位置
 var sy = 0, sz = 0;
+var cameraPositionDegreeY = 0;
+var cameraPositionDegreeZ = 0;
   window.onmousedown = function (ev){  //マウスダウン
     if (ev.target == renderer.domElement) { 
       down = true;
@@ -119,15 +123,14 @@ var sy = 0, sz = 0;
         var dy = -(ev.clientX - sy);
         var dz = -(ev.clientY - sz);
 
-        //TODO sin con 計算
-        camera.position.y = 100 * Math.sin(Math.atan(camera.position.y/camera.position.x)+ (10 * (Math.PI / 180)));
-        camera.position.x = 100 * Math.cos(Math.atan(camera.position.y/camera.position.x)+ (10 * (Math.PI / 180)));
-        //camera.position.y += dy*speed;
-        //camera.position.x += dy*speed;
-        
-        //camera.position.z -= dz*speed;
-        sy -= dy;
-        sz -= dz;
+        //TODO 間隔と操作結果が異なる
+        cameraPositionDegreeY += dy/1000;
+        cameraPositionDegreeZ += dz/1000;
+        camera.position.set( 400*Math.cos(cameraPositionDegreeY/100), 400*Math.sin(cameraPositionDegreeY/200), 50*Math.cos(cameraPositionDegreeZ/50));
+        camera.lookAt( {x:0, y:0, z:0 } );    
+
+        sy -= ev.clientX;
+        sz -= ev.clientY;
       }
     }
   }
